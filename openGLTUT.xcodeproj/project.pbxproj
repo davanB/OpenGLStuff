@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		85FD2E8D20C5EA8B0030D323 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 85FD2E8C20C5EA8B0030D323 /* main.cpp */; };
+		85FD2E9520C5EBF20030D323 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85FD2E9420C5EBF20030D323 /* OpenGL.framework */; };
+		85FD2E9920C5EDA20030D323 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 85FD2E9820C5EDA20030D323 /* libglfw.3.2.dylib */; };
+		85FD2E9B20C5F6C40030D323 /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = 85FD2E9A20C5F6C40030D323 /* glad.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +28,10 @@
 /* Begin PBXFileReference section */
 		85FD2E8920C5EA8B0030D323 /* openGLTUT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = openGLTUT; sourceTree = BUILT_PRODUCTS_DIR; };
 		85FD2E8C20C5EA8B0030D323 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		85FD2E9420C5EBF20030D323 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		85FD2E9620C5ED7A0030D323 /* libGLEW.2.1.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.1.0.dylib; path = ../../../../../../usr/local/Cellar/glew/2.1.0/lib/libGLEW.2.1.0.dylib; sourceTree = "<group>"; };
+		85FD2E9820C5EDA20030D323 /* libglfw.3.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.2.dylib; path = ../../../../../../usr/local/Cellar/glfw/3.2.1/lib/libglfw.3.2.dylib; sourceTree = "<group>"; };
+		85FD2E9A20C5F6C40030D323 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glad.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,6 +39,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85FD2E9920C5EDA20030D323 /* libglfw.3.2.dylib in Frameworks */,
+				85FD2E9520C5EBF20030D323 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -43,6 +52,7 @@
 			children = (
 				85FD2E8B20C5EA8B0030D323 /* openGLTUT */,
 				85FD2E8A20C5EA8B0030D323 /* Products */,
+				85FD2E9320C5EBF20030D323 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,9 +67,20 @@
 		85FD2E8B20C5EA8B0030D323 /* openGLTUT */ = {
 			isa = PBXGroup;
 			children = (
+				85FD2E9A20C5F6C40030D323 /* glad.c */,
 				85FD2E8C20C5EA8B0030D323 /* main.cpp */,
 			);
 			path = openGLTUT;
+			sourceTree = "<group>";
+		};
+		85FD2E9320C5EBF20030D323 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				85FD2E9820C5EDA20030D323 /* libglfw.3.2.dylib */,
+				85FD2E9620C5ED7A0030D323 /* libGLEW.2.1.0.dylib */,
+				85FD2E9420C5EBF20030D323 /* OpenGL.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,6 +140,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				85FD2E8D20C5EA8B0030D323 /* main.cpp in Sources */,
+				85FD2E9B20C5F6C40030D323 /* glad.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -238,6 +260,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/Cellar/glfw/3.2.1/include,
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/glfw/3.2.1/lib,
+					/usr/local/lib,
+				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -246,6 +278,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = (
+					/usr/local/Cellar/glfw/3.2.1/include,
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/glfw/3.2.1/lib,
+					/usr/local/lib,
+				);
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
