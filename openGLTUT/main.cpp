@@ -126,11 +126,18 @@ int main(int argc, const char * argv[]) {
     glDeleteShader(vertextShader);
     glDeleteShader(fragmentShader);
     
-    // triangle verticies position data
+    // 4 points of a rectangle
     float verticies[] = {
-        -0.5f, -0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-         0.0f,  0.5f, 0.0f
+         0.5f,  0.5f, 0.0f, // 0 top right
+         0.5f, -0.5f, 0.0f, // 1 bottom right
+        -0.5f, -0.5f, 0.0f, // 2 bottom left
+        -0.5f,  0.5f, 0.0f  // 3 top left
+    };
+    
+    // construct 2 triangles to form a rectangle
+    unsigned int indicies[] = {
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
     };
     
     // generate a vertex array object
@@ -140,23 +147,28 @@ int main(int argc, const char * argv[]) {
     // generate a vertex buffer object
     unsigned int vbo;
     glGenBuffers(1, &vbo);
-    // bind the vertex array object first
-    // then bind and set vertex buffer objects
-    // then configure vertex attributes
+    
+    // generate element buffer object
+    unsigned int ebo;
+    glGenBuffers(1, &ebo);
+    
+    // 1. bind the vertex array object first
     glBindVertexArray(vao);
     
+    // 2. bind and set vertex buffer objects
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(verticies), verticies, GL_STATIC_DRAW);
     
+    // 3. bind and set element buffer obbjects
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
+    
+    // 4. configure vertex attributes
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     
     // safe to unbind buffer since call to glVertexAttribPointer registers vbo as attributes VBO.
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    glUseProgram(shaderProgram);
-    glBindVertexArray(vao);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
     
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -166,12 +178,10 @@ int main(int argc, const char * argv[]) {
         // clear whatever colour was currently displayed
         glClear(GL_COLOR_BUFFER_BIT);
         
-        // draw triangle
+        // draw the 2 triangles to make a rectangle
         glUseProgram(shaderProgram);
-        // since there is only one vao no need to bind and unbind every time
-        // bind anyways
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
         // poll events and swap buffers
         glfwPollEvents();
@@ -180,6 +190,7 @@ int main(int argc, const char * argv[]) {
     // cleanup GL objects
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
     
     glfwTerminate();
     return 0;
