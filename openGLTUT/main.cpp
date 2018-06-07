@@ -17,6 +17,7 @@
 #include <string>
 #include <fstream>
 #include <streambuf>
+#include <cmath>
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -128,16 +129,18 @@ int main(int argc, const char * argv[]) {
     
     // 4 points of a rectangle
     float verticies[] = {
-         0.5f,  0.5f, 0.0f, // 0 top right
-         0.5f, -0.5f, 0.0f, // 1 bottom right
-        -0.5f, -0.5f, 0.0f, // 2 bottom left
-        -0.5f,  0.5f, 0.0f  // 3 top left
+         0.0f,  0.0f, 0.0f,
+         -0.5f, 1.0f, 0.0f,
+        -1.0f, 0.0f, 0.0f,
+        // second triangle
+        0.5f, -1.0f, 0.0f,
+        1.0f, 0.0f, 0.0f
     };
     
     // construct 2 triangles to form a rectangle
     unsigned int indicies[] = {
-        0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
+        0, 1, 2, // first triangle
+        0, 3, 4  // second triangle
     };
     
     // generate a vertex array object
@@ -180,6 +183,14 @@ int main(int argc, const char * argv[]) {
         
         // draw the 2 triangles to make a rectangle
         glUseProgram(shaderProgram);
+        
+        float time = glfwGetTime();
+        float red = sin(time)/2.0f + 0.5f;
+        float green = sin(time)/2.0f + 0.3f;
+        float blue = sin(time)/2.0f + 0.5f;
+        int vertexColourLocation = glGetUniformLocation(shaderProgram, "ourColour");
+        glUniform4f(vertexColourLocation, red, green, blue, 1.0f);
+        
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         
