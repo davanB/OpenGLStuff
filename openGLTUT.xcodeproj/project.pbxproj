@@ -26,6 +26,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		854514A920C9FDC300685DB6 /* shader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shader.h; sourceTree = "<group>"; };
 		85FBB20520C857EC00C6C682 /* vertexShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = vertexShader.vert; path = /Users/davanb/Documents/School/Learning/openGLTUT/openGLTUT/vertexShader.vert; sourceTree = "<absolute>"; };
 		85FBB20620C8631C00C6C682 /* fragmentShader.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; path = fragmentShader.frag; sourceTree = "<group>"; };
 		85FD2E8920C5EA8B0030D323 /* openGLTUT */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = openGLTUT; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,6 +69,7 @@
 		85FD2E8B20C5EA8B0030D323 /* openGLTUT */ = {
 			isa = PBXGroup;
 			children = (
+				854514A920C9FDC300685DB6 /* shader.h */,
 				85FBB20520C857EC00C6C682 /* vertexShader.vert */,
 				85FD2E9A20C5F6C40030D323 /* glad.c */,
 				85FD2E8C20C5EA8B0030D323 /* main.cpp */,
