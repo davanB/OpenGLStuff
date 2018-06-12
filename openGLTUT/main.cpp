@@ -21,6 +21,8 @@
 #include <streambuf>
 #include <cmath>
 
+#include "std_image.h"
+
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
@@ -30,13 +32,13 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 // process input, check if espace key was pressed to exit window.
-void processInput(GLFWwindow* window) {
+inline void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
 }
 
-void draw(GLFWwindow* window, unsigned int vao) {
+inline void draw(GLFWwindow* window, unsigned int vao) {
     // check if esc key was pressed
     processInput(window);
     
@@ -46,7 +48,7 @@ void draw(GLFWwindow* window, unsigned int vao) {
     // draw the 2 triangles to make a rectangle
     glBindVertexArray(vao);
     //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
     
     // poll events and swap buffers
     glfwPollEvents();
@@ -86,9 +88,9 @@ int main(int argc, const char * argv[]) {
     // 4 points of a rectangle
     float verticies[] = {
         // position         colour
-         0.0f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-        -0.5f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-        -1.0f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
+         0.5f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
+        -0.5f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
         // second triangle
         0.0f,  0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
         0.5f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
@@ -97,8 +99,14 @@ int main(int argc, const char * argv[]) {
     
     // construct 2 triangles to form a rectangle
     unsigned int indicies[] = {
-        0, 1, 2, // first triangle
-        0, 3, 4  // second triangle
+        0, 1, 2 // first triangle
+        //0, 3, 4  // second triangle
+    };
+    
+    float textCoords[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        0.5f, 1.0f
     };
     
     // generate a vertex array object
@@ -132,6 +140,29 @@ int main(int argc, const char * argv[]) {
     
     // safe to unbind buffer since call to glVertexAttribPointer registers vbo as attributes VBO.
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    int width;
+    int height;
+    int nrChannels;
+    unsigned char* data = stbi_load("/Users/davanb/Documents/School/Learning/container.jpg", &width, &height, &nrChannels, 0);
+    
+    unsigned int texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else {
+        std::cerr << "Image failed to load" << std::endl;
+    }
+    stbi_image_free(data);
     
     // render loop
     while (!glfwWindowShouldClose(window)) {
