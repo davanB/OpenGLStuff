@@ -21,7 +21,8 @@
 #include <streambuf>
 #include <cmath>
 
-#include "std_image.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
@@ -36,23 +37,6 @@ inline void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
-}
-
-inline void draw(GLFWwindow* window, unsigned int vao) {
-    // check if esc key was pressed
-    processInput(window);
-    
-    // clear whatever colour was currently displayed
-    glClear(GL_COLOR_BUFFER_BIT);
-    
-    // draw the 2 triangles to make a rectangle
-    glBindVertexArray(vao);
-    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    
-    // poll events and swap buffers
-    glfwPollEvents();
-    glfwSwapBuffers(window);
 }
 
 int main(int argc, const char * argv[]) {
@@ -87,26 +71,17 @@ int main(int argc, const char * argv[]) {
     
     // 4 points of a rectangle
     float verticies[] = {
-        // position         colour
-         0.5f, 0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-        -0.5f, 0.0f, 0.0f,   0.0f, 0.0f, 1.0f,
-        // second triangle
-        0.0f,  0.0f, 0.0f,   1.0f, 0.0f, 0.0f,
-        0.5f, -1.0f, 0.0f,   0.0f, 1.0f, 0.0f,
-        1.0f,  0.0f, 0.0f,   0.0f, 0.0f, 1.0f
+        // position           colour           texture coord
+         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f, 0.0f, 1.0f
     };
     
     // construct 2 triangles to form a rectangle
     unsigned int indicies[] = {
-        0, 1, 2 // first triangle
-        //0, 3, 4  // second triangle
-    };
-    
-    float textCoords[] = {
-        0.0f, 0.0f,
-        1.0f, 0.0f,
-        0.5f, 1.0f
+        0, 1, 3,
+        1, 2, 3
     };
     
     // generate a vertex array object
@@ -133,10 +108,12 @@ int main(int argc, const char * argv[]) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
     
     // 4. configure vertex attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
+    glEnableVertexAttribArray(2);
     
     // safe to unbind buffer since call to glVertexAttribPointer registers vbo as attributes VBO.
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -144,17 +121,22 @@ int main(int argc, const char * argv[]) {
     int width;
     int height;
     int nrChannels;
-    unsigned char* data = stbi_load("/Users/davanb/Documents/School/Learning/container.jpg", &width, &height, &nrChannels, 0);
     
-    unsigned int texture;
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    stbi_set_flip_vertically_on_load(true);
     
+    unsigned int texture1;
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    
+    // wrapping paramaters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // texture filtering paramaters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
+    // load the image
+    unsigned char* data = stbi_load("/Users/davanb/Documents/School/Learning/container.jpg", &width, &height, &nrChannels, 0);
     if (data) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -164,10 +146,53 @@ int main(int argc, const char * argv[]) {
     }
     stbi_image_free(data);
     
+    unsigned int texture2;
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    
+    // wrapping paramaters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // texture filtering paramaters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
+    data = stbi_load("/Users/davanb/Documents/School/Learning/awesomeface.png", &width, &height, &nrChannels, 0);
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else {
+        std::cerr << "Image failed to load" << std::endl;
+    }
+    stbi_image_free(data);
+    
+    shader.use();
+    shader.setInt("texture1", 0);
+    shader.setInt("texture2", 1);
+    
     // render loop
     while (!glfwWindowShouldClose(window)) {
+        // check if esc key was pressed
+        processInput(window);
+        
+        // clear whatever colour was currently displayed
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        // draw the 2 triangles to make a rectangle
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+        
         shader.use();
-        draw(window, vao);
+        glBindVertexArray(vao);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        //glDrawArrays(GL_TRIANGLES, 0, 3);
+        
+        // poll events and swap buffers
+        glfwPollEvents();
+        glfwSwapBuffers(window);
     }
     
     // cleanup GL objects
