@@ -33,9 +33,21 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 // process input, check if espace key was pressed to exit window.
-inline void processInput(GLFWwindow* window) {
+inline void processInput(GLFWwindow* window, float& currentAlpha) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
+    }
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        currentAlpha += 0.05;
+        if (currentAlpha > 1.0) {
+            currentAlpha = 1.0f;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        currentAlpha -= 0.05;
+        if (currentAlpha < 0.0) {
+            currentAlpha = 0.0f;
+        }
     }
 }
 
@@ -72,10 +84,10 @@ int main(int argc, const char * argv[]) {
     // 4 points of a rectangle
     float verticies[] = {
         // position           colour           texture coord
-         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 0.55f, 0.55f,
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 0.55f, 0.45f,
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 0.45f, 0.45f,
-        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f, 0.45f, 0.55f
+         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f, 0.0f, 1.0f
     };
     
     // construct 2 triangles to form a rectangle
@@ -129,8 +141,8 @@ int main(int argc, const char * argv[]) {
     glBindTexture(GL_TEXTURE_2D, texture1);
     
     // wrapping paramaters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // texture filtering paramaters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -168,13 +180,16 @@ int main(int argc, const char * argv[]) {
     stbi_image_free(data);
     
     shader.use();
+    float currentAlpha = 0.5;
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
+    shader.setFloat("alpha", currentAlpha);
     
     // render loop
     while (!glfwWindowShouldClose(window)) {
         // check if esc key was pressed
-        processInput(window);
+        processInput(window, currentAlpha);
+        shader.setFloat("alpha", currentAlpha);
         
         // clear whatever colour was currently displayed
         glClear(GL_COLOR_BUFFER_BIT);
