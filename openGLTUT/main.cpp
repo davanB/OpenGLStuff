@@ -72,10 +72,10 @@ int main(int argc, const char * argv[]) {
     // 4 points of a rectangle
     float verticies[] = {
         // position           colour           texture coord
-         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
+         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 2.0f, 2.0f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 2.0f, 0.0f,
         -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f, 0.0f, 2.0f
     };
     
     // construct 2 triangles to form a rectangle
@@ -129,8 +129,8 @@ int main(int argc, const char * argv[]) {
     glBindTexture(GL_TEXTURE_2D, texture1);
     
     // wrapping paramaters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     // texture filtering paramaters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
