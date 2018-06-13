@@ -72,10 +72,10 @@ int main(int argc, const char * argv[]) {
     // 4 points of a rectangle
     float verticies[] = {
         // position           colour           texture coord
-         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 2.0f, 2.0f,
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 2.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f, 0.0f, 2.0f
+         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 0.55f, 0.55f,
+         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 0.55f, 0.45f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 0.45f, 0.45f,
+        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f, 0.45f, 0.55f
     };
     
     // construct 2 triangles to form a rectangle
@@ -132,8 +132,8 @@ int main(int argc, const char * argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     // texture filtering paramaters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     // load the image
     unsigned char* data = stbi_load("/Users/davanb/Documents/School/Learning/container.jpg", &width, &height, &nrChannels, 0);
@@ -154,8 +154,8 @@ int main(int argc, const char * argv[]) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     // texture filtering paramaters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     
     data = stbi_load("/Users/davanb/Documents/School/Learning/awesomeface.png", &width, &height, &nrChannels, 0);
     if (data) {
