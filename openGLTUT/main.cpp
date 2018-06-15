@@ -24,6 +24,11 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+// GLM
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
@@ -184,12 +189,18 @@ int main(int argc, const char * argv[]) {
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
     shader.setFloat("alpha", currentAlpha);
+    unsigned int transformLoc = glGetUniformLocation(shader.programID, "transform");
     
     // render loop
     while (!glfwWindowShouldClose(window)) {
         // check if esc key was pressed
         processInput(window, currentAlpha);
         shader.setFloat("alpha", currentAlpha);
+        
+        glm::mat4 trans = glm::mat4(1.0f);
+        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
+        trans = glm::rotate(trans, static_cast<float>(glfwGetTime()), glm::vec3(0.5, 0.5, 0.5));
+        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         
         // clear whatever colour was currently displayed
         glClear(GL_COLOR_BUFFER_BIT);
