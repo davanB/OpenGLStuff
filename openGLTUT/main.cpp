@@ -88,11 +88,11 @@ int main(int argc, const char * argv[]) {
     
     // 4 points of a rectangle
     float verticies[] = {
-        // position           colour           texture coord
-         0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-         0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f, 0.0f,  1.0f, 1.0f, 0.0f, 0.0f, 1.0f
+        // position          texture coord
+         0.5f,  0.5f, 0.0f,  1.0f, 1.0f,
+         0.5f, -0.5f, 0.0f,  1.0f, 0.0f,
+        -0.5f, -0.5f, 0.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f, 0.0f,  0.0f, 1.0f
     };
     
     // construct 2 triangles to form a rectangle
@@ -125,12 +125,10 @@ int main(int argc, const char * argv[]) {
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicies), indicies, GL_STATIC_DRAW);
     
     // 4. configure vertex attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3* sizeof(float)));
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
-    glEnableVertexAttribArray(2);
     
     // safe to unbind buffer since call to glVertexAttribPointer registers vbo as attributes VBO.
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -189,18 +187,17 @@ int main(int argc, const char * argv[]) {
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
     shader.setFloat("alpha", currentAlpha);
-    unsigned int transformLoc = glGetUniformLocation(shader.programID, "transform");
+    unsigned int modelLoc = glGetUniformLocation(shader.programID, "model");
+    unsigned int viewLoc = glGetUniformLocation(shader.programID, "view");
+    unsigned int projectionLoc = glGetUniformLocation(shader.programID, "projection");
     
     // render loop
     while (!glfwWindowShouldClose(window)) {
+        shader.use();
+        
         // check if esc key was pressed
         processInput(window, currentAlpha);
         shader.setFloat("alpha", currentAlpha);
-        
-        glm::mat4 trans = glm::mat4(1.0f);
-        trans = glm::translate(trans, glm::vec3(0.5f, -0.5f, 0.0f));
-        trans = glm::rotate(trans, static_cast<float>(glfwGetTime()), glm::vec3(0.5, 0.5, 0.5));
-        glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
         
         // clear whatever colour was currently displayed
         glClear(GL_COLOR_BUFFER_BIT);
@@ -211,7 +208,15 @@ int main(int argc, const char * argv[]) {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
         
-        shader.use();
+        glm::mat4 identity = glm::mat4(1.0f);
+        glm::mat4 model = glm::rotate(identity, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        glm::mat4 view = glm::translate(identity, glm::vec3(0.0f, 0.0f, -3.0f));
+        glm::mat4 projection = identity * glm::perspective<float>(45.0f, static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 100.0f);
+        
+        glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         //glDrawArrays(GL_TRIANGLES, 0, 3);
