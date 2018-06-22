@@ -32,13 +32,32 @@
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
+float currentAlpha = 0.5f;
+
+glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+
+bool firstMouse = true;
+float pitch = 0.0f;
+float yaw = 0.0f;
+
+float fov = 45.0f;
+
+float lastX = static_cast<float>(SCR_WIDTH) / static_cast<float>(2);
+float lastY = static_cast<float>(SCR_HEIGHT) / static_cast<float>(2);
+
+
 // callback to resize the viewport to match the new dimentions after window resize.
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
 // process input, check if espace key was pressed to exit window.
-inline void processInput(GLFWwindow* window, float& currentAlpha) {
+inline void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }
@@ -53,6 +72,65 @@ inline void processInput(GLFWwindow* window, float& currentAlpha) {
         if (currentAlpha < 0.0) {
             currentAlpha = 0.0f;
         }
+    }
+    
+    float cameraSpeed = 2.5f * deltaTime;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        cameraPos += cameraSpeed * cameraFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        cameraPos -= cameraSpeed * cameraFront;
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+    }
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (firstMouse) {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouse = false;
+    }
+    
+    float xOffset = xpos - lastX;
+    float yOffset = lastY - ypos;
+    lastX = xpos;
+    lastY = ypos;
+    
+    float sensitivity = 0.05f;
+    xOffset *= sensitivity;
+    yOffset *= sensitivity;
+    
+    yaw += xOffset;
+    pitch += yOffset;
+    
+    if (pitch > 89.0f) {
+        pitch = 89.0f;
+    }
+    if (pitch < -89.0f) {
+        pitch = -89.0f;
+    }
+    
+    glm::vec3 front;
+    front.x = cos(glm::radians(pitch)) * cos(glm::radians(yaw));
+    front.y = sin(glm::radians(pitch));
+    front.z = cos(glm::radians(pitch)) * sin(glm::radians(yaw));
+    cameraFront = glm::normalize(front);
+}
+
+void scroll_callabck(GLFWwindow* window, double xOffest, double yOffset) {
+    if (fov >= 1.0f && fov <= 45.0f) {
+        fov -= yOffset;
+    }
+    if (fov <= 1.0f) {
+        fov = 1.0f;
+    }
+    if (fov >= 45.0f) {
+        fov = 45.0f;
     }
 }
 
@@ -77,6 +155,9 @@ int main(int argc, const char * argv[]) {
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callabck);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     
     // glad, load all openGL functions pointers into memory
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
@@ -220,24 +301,12 @@ int main(int argc, const char * argv[]) {
     stbi_image_free(data);
     
     shader.use();
-    float currentAlpha = 0.5;
     shader.setInt("texture1", 0);
     shader.setInt("texture2", 1);
     shader.setFloat("alpha", currentAlpha);
     unsigned int modelLoc = glGetUniformLocation(shader.programID, "model");
     unsigned int viewLoc = glGetUniformLocation(shader.programID, "view");
     unsigned int projectionLoc = glGetUniformLocation(shader.programID, "projection");
-    
-    // this is how to manually calculate vecotors to create the camera view (3 perpenducular vectors)
-//    glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-//    glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-//    glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
-//    glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-//    glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
-//    glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
-    // or use built in GLM function
-//    glm::mat4 view = glm::mat4(1.0f);
-//    view = glm::lookAt(glm::vec3(0.0f, 0.0f, 3.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     
     glm::vec3 cubePositions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f),
@@ -252,15 +321,16 @@ int main(int argc, const char * argv[]) {
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
     
-    glm::mat4 projection = glm::perspective<float>(45.0f, static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 100.0f);
-    glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-    
     // render loop
     while (!glfwWindowShouldClose(window)) {
         shader.use();
         
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+        
         // check if esc key was pressed
-        processInput(window, currentAlpha);
+        processInput(window);
         shader.setFloat("alpha", currentAlpha);
         
         // clear whatever colour was currently displayed
@@ -272,12 +342,11 @@ int main(int argc, const char * argv[]) {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
         
+        glm::mat4 projection = glm::perspective<float>(fov, static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT), 0.1f, 100.0f);
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
         
-        float radius = 10.0f;
-        float camX = sin(glfwGetTime()) * radius;
-        float camZ = cos(glfwGetTime()) * radius;
         glm::mat4 view = glm::mat4(1.0f);
-        view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+        view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
         glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
         
         glBindVertexArray(vao);
