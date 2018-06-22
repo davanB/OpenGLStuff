@@ -3,13 +3,15 @@
 //  openGLTUT
 //
 //  Created by Davan Basran on 2018-06-07.
-//  Copyright © 2018 Davan Basran. All rights reserved.
 //
 
 #ifndef shader_h
 #define shader_h
 
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <string>
 #include <fstream>
@@ -78,6 +80,11 @@ public:
     
     void setFloat(const std::string& name, float value) const {
         glUniform1f(glGetUniformLocation(programID, name.c_str()), value);
+    }
+    
+    void setMat4(const std::string& name, const glm::mat4& matrix) const {
+        unsigned int loc = glGetUniformLocation(programID, name.c_str());
+        glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 
 private:

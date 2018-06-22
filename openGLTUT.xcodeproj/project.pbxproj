@@ -26,6 +26,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		851611B520DC98EA00A58C7B /* camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
 		852A975F20D0335B00FC64AC /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
 		854514A920C9FDC300685DB6 /* shader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = shader.h; sourceTree = "<group>"; };
 		85FBB20520C857EC00C6C682 /* vertexShader.vert */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = vertexShader.vert; path = /Users/davanb/Documents/School/Learning/openGLTUT/openGLTUT/vertexShader.vert; sourceTree = "<absolute>"; };
@@ -70,6 +71,7 @@
 		85FD2E8B20C5EA8B0030D323 /* openGLTUT */ = {
 			isa = PBXGroup;
 			children = (
+				851611B520DC98EA00A58C7B /* camera.h */,
 				854514A920C9FDC300685DB6 /* shader.h */,
 				85FBB20520C857EC00C6C682 /* vertexShader.vert */,
 				85FD2E9A20C5F6C40030D323 /* glad.c */,
