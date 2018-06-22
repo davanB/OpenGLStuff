@@ -86,6 +86,11 @@ public:
         unsigned int loc = glGetUniformLocation(programID, name.c_str());
         glUniformMatrix4fv(loc, 1, GL_FALSE, glm::value_ptr(matrix));
     }
+    
+    void setVec3(const std::string& name, glm::vec3 vec3) const {
+        unsigned int loc = glGetUniformLocation(programID, name.c_str());
+        glUniform3fv(loc, 1, glm::value_ptr(vec3));
+    }
 
 private:
     void checkCompileErrors(unsigned int shaderID, bool isProgram) {
