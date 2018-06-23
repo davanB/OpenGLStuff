@@ -249,6 +249,8 @@ int main(int argc, const char * argv[]) {
         shader.setFloat("alpha", currentAlpha);
         shader.setVec3("objectColour", glm::vec3(1.0f, 0.5f, 0.31f));
         shader.setVec3("lightColour", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader.setVec3("lightPos", lightPos);
+        shader.setVec3("viewPos", camera.mPosition);
         
         glm::mat4 projection = glm::perspective<float>(camera.mZoom,
                                                        static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT),
