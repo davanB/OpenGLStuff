@@ -269,6 +269,8 @@ int main(int argc, const char * argv[]) {
         lampShader.setMat4("projection", projection);
         lampShader.setMat4("view", view);
         model = glm::mat4(1.0f);
+        //lightPos.x = sin(glfwGetTime() / 2.0f) * 2.0f;
+        //lightPos.z = cos(glfwGetTime() / 2.0f) * 2.0f;
         model = glm::translate(model, lightPos);
         model = glm::scale(model, glm::vec3(0.2f));
         lampShader.setMat4("model", model);
