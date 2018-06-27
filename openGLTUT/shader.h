@@ -95,14 +95,14 @@ public:
 private:
     void checkCompileErrors(unsigned int shaderID, bool isProgram) {
         int success;
-        unsigned int errorBuffSize = 512;
+        unsigned int errorBuffSize = 2048;
         char infoLog[errorBuffSize];
         
         if (isProgram) {
             glGetProgramiv(shaderID, GL_LINK_STATUS, &success);
             if (!success) {
                 glGetProgramInfoLog(programID, errorBuffSize, NULL, infoLog);
-                std::cerr << "ERROR SHADER COMPILATION FAILED" << std::endl << infoLog << std::endl;
+                std::cerr << "ERROR PROGRAM COMPILATION FAILED" << std::endl << infoLog << std::endl;
             }
         }
         else {

@@ -318,21 +318,21 @@ int main(int argc, const char * argv[]) {
         shader.setVec3("dirLight.lightProp.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
         shader.setVec3("dirLight.lightProp.diffuse", glm::vec3(0.4f, 0.4f, 0.4f));
         shader.setVec3("dirLight.lightProp.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-        
+
         // point lighting uniforms
         for (int i = 0; i < 4; i++)
         {
             std::string number = std::to_string(i);
-            
-            shader.setVec3("pointLight[" + number + "].position", pointLightPositions[i]);
-            shader.setFloat("pointLight[" + number + "].attenuation.constant", 1.0f);
-            shader.setFloat("pointLight[" + number + "].attenuation.linear", 0.09f);
-            shader.setFloat("pointLight[" + number + "].attenuation.quadratic", 0.032f);
-            shader.setVec3("pointLight[" + number + "].lightProp.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
-            shader.setVec3("pointLight[" + number + "].lightProp.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-            shader.setVec3("pointLight[" + number + "].lightProp.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+
+            shader.setVec3("pointLights[" + number + "].position", pointLightPositions[i]);
+            shader.setFloat("pointLights[" + number + "].attenuation.constant", 1.0f);
+            shader.setFloat("pointLights[" + number + "].attenuation.linear", 0.09f);
+            shader.setFloat("pointLights[" + number + "].attenuation.quadratic", 0.032f);
+            shader.setVec3("pointLights[" + number + "].lightProp.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+            shader.setVec3("pointLights[" + number + "].lightProp.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+            shader.setVec3("pointLights[" + number + "].lightProp.specular", glm::vec3(1.0f, 1.0f, 1.0f));
         }
-        
+
         // spotlight uniforms
         shader.setVec3("spotLight.position", camera.mPosition);
         shader.setVec3("spotLight.direction", camera.mFront);
