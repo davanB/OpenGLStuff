@@ -139,7 +139,7 @@ private:
         
         glBindVertexArray(0);
     }
-}
+};
 
 
 #endif /* mesh_h */
