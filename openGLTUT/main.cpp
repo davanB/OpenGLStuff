@@ -172,7 +172,41 @@ int main(int argc, const char * argv[]) {
         
         shader.use();
         shader.setFloat("alpha", currentAlpha);
+        shader.setVec3("viewPos", camera.mPosition);
+        shader.setFloat("material.shininess", 32.0f);
         
+        shader.setVec3("dirLight.direction", glm::vec3(-0.2f, -1.0f, -0.3f));
+        shader.setVec3("dirLight.lightProp.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        shader.setVec3("dirLight.lightProp.diffuse", glm::vec3(0.4f, 0.4f, 0.4f));
+        shader.setVec3("dirLight.lightProp.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+        
+        shader.setVec3("pointLights[0].position", glm::vec3( 0.7f,  0.2f,  2.0f));
+        shader.setVec3("pointLights[0].lightProp.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        shader.setVec3("pointLights[0].lightProp.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        shader.setVec3("pointLights[0].lightProp.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader.setFloat("pointLights[0].attenuation.constant", 1.0f);
+        shader.setFloat("pointLights[0].attenuation.linear", 0.09);
+        shader.setFloat("pointLights[0].attenuation.quadratic", 0.032);
+        
+        shader.setVec3("pointLights[1].position", glm::vec3( 2.3f, -3.3f, -4.0f));
+        shader.setVec3("pointLights[1].lightProp.ambient", glm::vec3(0.05f, 0.05f, 0.05f));
+        shader.setVec3("pointLights[1].lightProp.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
+        shader.setVec3("pointLights[1].lightProp.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader.setFloat("pointLights[1].attenuation.constant", 1.0f);
+        shader.setFloat("pointLights[1].attenuation.linear", 0.09);
+        shader.setFloat("pointLights[1].attenuation.quadratic", 0.032);
+        
+        shader.setVec3("spotLight.position", camera.mPosition);
+        shader.setVec3("spotLight.direction", camera.mFront);
+        shader.setVec3("spotLight.lightProp.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
+        shader.setVec3("spotLight.lightProp.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader.setVec3("spotLight.lightProp.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        shader.setFloat("spotLight.attenuation.constant", 1.0f);
+        shader.setFloat("spotLight.attenuation.linear", 0.09);
+        shader.setFloat("spotLight.attenuation.quadratic", 0.032);
+        shader.setFloat("spotLight.cutoff", glm::cos(glm::radians(12.5f)));
+        shader.setFloat("spotLight.outerCutoff", glm::cos(glm::radians(15.0f)));
+
         glm::mat4 projection = glm::perspective<float>(camera.mZoom,
                                                        static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT),
                                                        0.1f, 100.0f);
