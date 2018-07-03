@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8562F5EF20E7F139003B75D5 /* model.h in Sources */ = {isa = PBXBuildFile; fileRef = 85A3770220E6ED4900FB9BA4 /* model.h */; };
+		8562F5F020E7F139003B75D5 /* mesh.h in Sources */ = {isa = PBXBuildFile; fileRef = 85A3770120E6A8D700FB9BA4 /* mesh.h */; };
+		8562F5F120E7F139003B75D5 /* camera.h in Sources */ = {isa = PBXBuildFile; fileRef = 851611B520DC98EA00A58C7B /* camera.h */; };
+		8562F5F220E7F139003B75D5 /* shader.h in Sources */ = {isa = PBXBuildFile; fileRef = 854514A920C9FDC300685DB6 /* shader.h */; };
+		8562F5F320E7F139003B75D5 /* stb_image.h in Sources */ = {isa = PBXBuildFile; fileRef = 852A975F20D0335B00FC64AC /* stb_image.h */; };
 		85FD2E8D20C5EA8B0030D323 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 85FD2E8C20C5EA8B0030D323 /* main.cpp */; };
 		85FD2E9520C5EBF20030D323 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85FD2E9420C5EBF20030D323 /* OpenGL.framework */; };
 		85FD2E9920C5EDA20030D323 /* libglfw.3.2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 85FD2E9820C5EDA20030D323 /* libglfw.3.2.dylib */; };
@@ -153,6 +158,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8562F5EF20E7F139003B75D5 /* model.h in Sources */,
+				8562F5F020E7F139003B75D5 /* mesh.h in Sources */,
+				8562F5F120E7F139003B75D5 /* camera.h in Sources */,
+				8562F5F220E7F139003B75D5 /* shader.h in Sources */,
+				8562F5F320E7F139003B75D5 /* stb_image.h in Sources */,
 				85FD2E8D20C5EA8B0030D323 /* main.cpp in Sources */,
 				85FD2E9B20C5F6C40030D323 /* glad.c in Sources */,
 			);
@@ -273,6 +283,7 @@
 		85FD2E9120C5EA8B0030D323 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
 					/usr/local/Cellar/glfw/3.2.1/include,
@@ -283,7 +294,7 @@
 					/usr/local/Cellar/glfw/3.2.1/lib,
 					/usr/local/lib,
 				);
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lassimp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -291,6 +302,7 @@
 		85FD2E9220C5EA8B0030D323 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_STYLE = Automatic;
 				HEADER_SEARCH_PATHS = (
 					/usr/local/Cellar/glfw/3.2.1/include,
@@ -301,7 +313,7 @@
 					/usr/local/Cellar/glfw/3.2.1/lib,
 					/usr/local/lib,
 				);
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lassimp";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

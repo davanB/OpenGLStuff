@@ -44,13 +44,13 @@ public:
         unsigned int vertextShaderID = glCreateShader(GL_VERTEX_SHADER);
         glShaderSource(vertextShaderID, 1, &vertexShaderSrcPtr, NULL);
         glCompileShader(vertextShaderID);
-        checkCompileErrors(programID, false);
+        checkCompileErrors(vertextShaderID, false);
         
         // compile the fragment shader code
         unsigned int fragmentShaderID = glCreateShader(GL_FRAGMENT_SHADER);
         glShaderSource(fragmentShaderID, 1, &fragmentShaderSrcPtr, NULL);
         glCompileShader(fragmentShaderID);
-        checkCompileErrors(programID, false);
+        checkCompileErrors(fragmentShaderID, false);
         
         // 3. Link the shader program
         programID = glCreateProgram();
@@ -95,21 +95,21 @@ public:
 private:
     void checkCompileErrors(unsigned int shaderID, bool isProgram) {
         int success;
-        unsigned int errorBuffSize = 2048;
+        int errorBuffSize = 2048;
         char infoLog[errorBuffSize];
         
         if (isProgram) {
             glGetProgramiv(shaderID, GL_LINK_STATUS, &success);
-            if (!success) {
-                glGetProgramInfoLog(programID, errorBuffSize, NULL, infoLog);
-                std::cerr << "ERROR PROGRAM COMPILATION FAILED" << std::endl << infoLog << std::endl;
+            if (success != GL_TRUE) {
+                glGetProgramInfoLog(programID, errorBuffSize, &errorBuffSize, infoLog);
+                std::cerr << "ERROR SHADER PROGRAM LINKING FAILED" << std::endl << infoLog << std::endl;
             }
         }
         else {
             glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
-            if (!success) {
-                glGetShaderInfoLog(shaderID, errorBuffSize, NULL, infoLog);
-                std::cerr << "ERROR SHADER PROGRAM LINKING FAILED" << std::endl << infoLog << std::endl;
+            if (success != GL_TRUE) {
+                glGetShaderInfoLog(shaderID, errorBuffSize, &errorBuffSize, infoLog);
+                std::cerr << "ERROR SHADER COMPILATION FAILED" << std::endl << infoLog << std::endl;
             }
         }
     }

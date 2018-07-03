@@ -2,10 +2,15 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoods;
+layout (location = 3) in vec3 aTangents;
+layout (location = 4) in vec3 aBitangents;
 
-out vec3 FragPos;
-out vec3 Normal;
+
+//out vec3 FragPos;
+//out vec3 Normal;
 out vec2 TexCoords;
+//out vec3 Tangents;
+//out vec3 Bitangents;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -13,7 +18,9 @@ uniform mat4 projection;
 
 void main() {
     gl_Position = projection * view * model * vec4(aPos, 1.0f);
-    FragPos = vec3(model * vec4(aPos, 1.0));
+//    FragPos = vec3(model * vec4(aPos, 1.0));
     TexCoords = aTexCoods;
-    Normal = mat3(transpose(inverse(model))) * aNormal;
+//    Normal = mat3(transpose(inverse(model))) * aNormal;
+//    Tangents = vec3(model * vec4(aTangents, 1.0));
+//    Bitangents = vec3(model * vec4(aBitangents, 1.0));
 }

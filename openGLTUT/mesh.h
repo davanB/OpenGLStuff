@@ -45,7 +45,8 @@ public:
     std::vector<unsigned int> mIndicies;
     std::vector<Texture> mTextures;
     
-    Mesh(std::vector<Vertex> verticies, vector<unsigned int> indicies, std::vector<Texture> textures)
+    Mesh(const std::vector<Vertex>& verticies, const std::vector<unsigned int>& indicies,
+         const std::vector<Texture>& textures)
         : mVerticies(verticies), mIndicies(indicies), mTextures(textures) {
         setUpMesh();
     }
@@ -54,7 +55,7 @@ public:
         return mVao;
     }
     
-    void Draw(const Shader& shader) {
+    void draw(const Shader& shader) const {
         unsigned int diffuseNbr = 1;
         unsigned int specularNbr = 1;
         unsigned int normalNbr = 1;
@@ -86,7 +87,7 @@ public:
                 normalNbr++;
                 name = textureNormal;
             }
-            else  { // type == TextureType::HEIGHT
+            else if (type == TextureType::HEIGHT) {
                 number = std::to_string(heightNbr);
                 heightNbr++;
                 name = textureHeight;
@@ -98,8 +99,8 @@ public:
         glActiveTexture(GL_TEXTURE0);
         
         // draw mesh
-        glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, mIndices.size(), GL_UNSIGNED_INT, 0);
+        glBindVertexArray(mVao);
+        glDrawElements(GL_TRIANGLES, mIndicies.size(), GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
     }
     
@@ -116,16 +117,16 @@ private:
         glBindVertexArray(mVao);
         glBindBuffer(GL_ARRAY_BUFFER, mVbo);
         
-        glBufferData(GL_ARRAY_BUFFER, mVerticies.size() * sizeof(Vertex), &mVertices[0], GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, mVerticies.size() * sizeof(Vertex), &mVerticies[0], GL_STATIC_DRAW);
         
-        glBindBufferData(GL_ELEMENT_ARRAY_BUFFER, mEbo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEbo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, mIndicies.size() * sizeof(unsigned int), &mIndicies[0], GL_STATIC_DRAW);
         
         // vertex positions
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
         glEnableVertexAttribArray(0);
         // vertex normals
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normals));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, normal));
         glEnableVertexAttribArray(1);
         // vertex texture coordinates
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoords));
@@ -134,7 +135,7 @@ private:
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, tangent));
         glEnableVertexAttribArray(3);
         // vertex bitangent
-        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangest));
+        glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, bitangent));
         glEnableVertexAttribArray(4);
         
         glBindVertexArray(0);
