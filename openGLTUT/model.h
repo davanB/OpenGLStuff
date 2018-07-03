@@ -128,6 +128,11 @@ private:
         std::string fileName = std::string(path);
         fileName = directory + '/' + fileName;
         
+        size_t f = fileName.find("\\");
+        fileName.replace(f, std::string("\\").length(), "/");
+        
+        std::cout << fileName << std::endl;
+        
         unsigned int textureID;
         glGenTextures(1, &textureID);
         

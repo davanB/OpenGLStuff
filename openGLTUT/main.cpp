@@ -156,7 +156,8 @@ int main(int argc, const char * argv[]) {
     Shader lampShader("/Users/davanb/Documents/School/Learning/openGLTUT/openGLTUT/vertexShader.vert",
                           "/Users/davanb/Documents/School/Learning/openGLTUT/openGLTUT/lightSourceShader.frag");
     
-    Model model("/Users/davanb/Documents/School/Learning/nanosuit/nanosuit.obj");
+//    Model model("/Users/davanb/Documents/School/Learning/nanosuit/nanosuit.obj");
+    Model model("/Users/davanb/Documents/School/Learning/sponza_obj/sponza.obj");
     
     // render loop
     while (!glfwWindowShouldClose(window)) {
@@ -209,7 +210,7 @@ int main(int argc, const char * argv[]) {
 
         glm::mat4 projection = glm::perspective<float>(camera.mZoom,
                                                        static_cast<float>(SCR_WIDTH) / static_cast<float>(SCR_HEIGHT),
-                                                       0.1f, 100.0f);
+                                                       0.1f, 5000.0f);
         shader.setMat4("projection", projection);
         glm::mat4 view = camera.GetViewMatrix();
         shader.setMat4("view", view);
